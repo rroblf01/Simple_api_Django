@@ -1,0 +1,26 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: redis:6.2.6
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    expose:
+      - "6379"
+    volumes:
+      type: volume
+      source: redis-data
+      target: /data
+  
+volumes:
+  redis-data: {}
